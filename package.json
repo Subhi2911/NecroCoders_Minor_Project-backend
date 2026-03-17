@@ -2,17 +2,29 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Subhi2911/NecroCoders_Minor_Project-backend.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Subhi2911/NecroCoders_Minor_Project-backend/issues"
+  },
+  "homepage": "https://github.com/Subhi2911/NecroCoders_Minor_Project-backend#readme",
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "mongoose": "^9.2.4"
+    "express-session": "^1.19.0",
+    "mongoose": "^9.3.0",
+    "passport": "^0.7.0",
+    "passport-microsoft": "^2.1.0"
   }
 }
