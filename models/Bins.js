@@ -1,6 +1,10 @@
 const mongoose=require('mongoose');
 
 const BinsSchema=new mongoose.Schema({
+    binCode:{
+        type:String,
+        unique:true
+    },
     location:{
         type:String,
         required:true
@@ -31,6 +35,24 @@ const BinsSchema=new mongoose.Schema({
         coordinates:{
             type:[Number],
             required:true
+        }
+    },
+     authority: {
+        id:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Staffs'
+        },
+        name: {
+            type: String,
+            required: true
+        },
+        contact: {
+            type: Number, 
+            required: true
+        },
+        email: {
+            type: String,
+            optional: true
         }
     }
 },{timestamps:true});

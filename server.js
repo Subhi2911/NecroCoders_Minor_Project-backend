@@ -48,6 +48,7 @@ app.use(express.json());
 //app.use(express.urlencoded({ extended: true }));
 app.use('/api/alerts', require('./routes/alerts'));
 app.use('/api/bins', require('./routes/bins'));
+app.use('/api/sms', require('./routes/sms'));
 
 app.use(passport.initialize());
 app.use(passport.session());
