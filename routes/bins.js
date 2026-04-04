@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Bins = require('../models/Bins');
 const Alerts = require('../models/Alerts');
 require('../models/Staffs');
+const { nanoid } = require('nanoid');
 
 // Get all bins
 router.get('/', async (req, res) => {
@@ -91,21 +92,41 @@ router.put('/assign-authority/:binId', async (req, res) => {
     }
 });
 
-//assign new bin to new authority
-router.post('/assign-bin', async (req, res) => {
+
+//add new bins
+
+router.post('/add-bin', async (req, res) => {
     try {
-        const { location, capacity, authorityId } = req.body;
+        const { location, capacity, authority } = req.body;
+        console.log(location, capacity, authority);
         const newBin = new Bins({
+            binCode: `BIN-${nanoid(8)}`,
             location,
             capacity,
-            authority: authorityId
+            authority,
+            locationCoordinates: {
+                type: 'Point',
+                coordinates: [0, 0] // default coordinates, can be updated later
+            },
+            currentFillLevel: 0,
+            status: 'empty'
         });
+
+
         await newBin.save();
-        res.status(201).json(newBin);
+        const populatedBin = await Bins.findById(newBin._id).populate('authority', 'name phone');
+        res.status(201).json(populatedBin);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create and assign bin' });
+        console.log(error);
+        res.status(500).json({ error: 'Failed to create bin' });
     }
 });
+
+router.delete("/:id", async (req, res) => {
+    await Bins.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+});
+
 
 
 module.exports = router;
