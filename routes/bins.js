@@ -17,6 +17,24 @@ router.get('/', async (req, res) => {
     }
 });
 
+//all unassigned bins
+router.get('/unassigned', async (req, res) => {
+    try {
+        console.log("Fetching unassigned bins...");
+        const bins = await Bins.find({
+            $or: [
+                { authority: null },
+                { authority: { $exists: false } },
+            ]
+        });
+
+        res.status(200).json(bins);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Failed to fetch bins" });
+    }
+});
+
 // Get a specific bin by ID
 router.get('/:id', async (req, res) => {
     try {
@@ -122,10 +140,14 @@ router.post('/add-bin', async (req, res) => {
     }
 });
 
+
+
 router.delete("/:id", async (req, res) => {
     await Bins.findByIdAndDelete(req.params.id);
     res.json({ success: true });
 });
+
+
 
 
 
