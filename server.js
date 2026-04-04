@@ -11,6 +11,7 @@ const connectToMongo = require('./db');
 const http = require("http");
 const { Server } = require("socket.io");
 const Bins = require('./models/Bins');
+const User = require("./models/User");
 
 
 connectToMongo();
@@ -33,8 +34,7 @@ const io = new Server(server, {
   },
 });
 
-// THIS is the correct one
-server.listen(5000, () => console.log("🚀 Server running on port 5000"));
+
 
 app.use(
   session({
@@ -44,18 +44,64 @@ app.use(
   })
 );
 
-app.use(express.json());
-//app.use(express.urlencoded({ extended: true }));
-app.use('/api/alerts', require('./routes/alerts'));
-app.use('/api/bins', require('./routes/bins'));
-app.use('/api/sms', require('./routes/sms'));
-app.use('/api/staffs', require('./routes/staffs'));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((obj, done) => done(null, obj));
+app.use(express.json());
+
+
+function ensureAuth(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ message: "Unauthorized" });
+}
+
+//app.use(express.urlencoded({ extended: true }));
+app.use('/api/alerts', ensureAuth, require('./routes/alerts'));
+app.use('/api/bins', ensureAuth, require('./routes/bins'));
+app.use('/api/sms', ensureAuth, require('./routes/sms'));
+app.use('/api/staffs', ensureAuth, require('./routes/staffs'));
+
+
+
+
+app.get("/api/auth/user", (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: "Not logged in" });
+  }
+
+  res.json({ success: true, user: req.user });
+});
+
+passport.serializeUser((user, done) => {
+  done(null, user.id); // store MongoDB _id
+});
+
+app.get("/api/auth/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return res.status(500).json({ success: false, message: "Logout failed" });
+    }
+
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid"); // session cookie
+      res.json({ success: true, message: "Logged out" });
+    });
+  });
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
+
 
 passport.use(
   new MicrosoftStrategy(
@@ -67,12 +113,25 @@ passport.use(
       tenant: TENANT_ID
     },
     async (accessToken, refreshToken, profile, done) => {
-      const user = {
-        id: profile.id,
-        name: profile.displayName,
-        email: profile.emails[0].value
-      };
-      return done(null, user);
+      try {
+        // Check if user already exists
+        console.log("Microsoft profile:", profile);
+        console.log("User", User);
+        let user = await User.findOne({ microsoftId: profile.id });
+
+        if (!user) {
+          // Create new user
+          user = await User.create({
+            microsoftId: profile.id,
+            name: profile.displayName,
+            email: profile.emails[0].value
+          });
+        }
+
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
     }
   )
 );
@@ -145,4 +204,5 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 });
 
-app.listen(5000, () => console.log("Server running"));
+// THIS is the correct one
+server.listen(5000, () => console.log("🚀 Server running on port 5000"));
