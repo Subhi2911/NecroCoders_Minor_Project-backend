@@ -23,7 +23,7 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://necrocoders-minor-project.onrender.com"
+  "https://cleantrack-19jw.onrender.com"
 ];
 
 app.use(cors({
@@ -126,7 +126,7 @@ passport.use(
       clientID: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
       callbackURL: process.env.NODE_ENV === "production"
-        ? "https://cleantrack-backend-y34g.onrender.com/auth/microsoft/callback"
+        ? "https://cleantrack-backend-09ku.onrender.com/auth/microsoft/callback"
         : "http://localhost:5000/auth/microsoft/callback",
       scope: ["user.read"],
       tenant: TENANT_ID
@@ -166,7 +166,7 @@ app.get(
   (req, res) => {
     res.redirect(
       process.env.NODE_ENV === "production"
-        ? "https://necrocoders-minor-project.onrender.com"
+        ? "https://cleantrack-19jw.onrender.com"
         : "http://localhost:3000"
     );
   }
