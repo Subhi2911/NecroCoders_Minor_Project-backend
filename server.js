@@ -13,6 +13,8 @@ const { Server } = require("socket.io");
 const Bins = require('./models/Bins');
 const User = require("./models/User");
 const PORT = process.env.PORT || 5000;
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 
 connectToMongo();
@@ -23,7 +25,7 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://cleantrack-19jw.onrender.com"
+  `${FRONTEND_URL}`
 ];
 
 app.use(cors({
@@ -126,7 +128,7 @@ passport.use(
       clientID: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
       callbackURL: process.env.NODE_ENV === "production"
-        ? "https://cleantrack-backend-09ku.onrender.com/auth/microsoft/callback"
+        ? `${BACKEND_URL}/auth/microsoft/callback`
         : "http://localhost:5000/auth/microsoft/callback",
       scope: ["user.read"],
       tenant: TENANT_ID
@@ -167,7 +169,7 @@ app.get(
   (req, res) => {
     res.redirect(
       process.env.NODE_ENV === "production"
-        ? "https://cleantrack-19jw.onrender.com"
+        ? `${FRONTEND_URL}`
         : "http://localhost:3000"
     );
   }
