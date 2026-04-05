@@ -124,7 +124,7 @@ router.post('/add-bin', async (req, res) => {
             authority,
             locationCoordinates: {
                 type: 'Point',
-                coordinates: [0, 0] // default coordinates, can be updated later
+                coordinates: [28.61, 77.20] // default coordinates, can be updated later
             },
             zone: zone || null, // default zone, can be updated later
             currentFillLevel: 0,

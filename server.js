@@ -50,14 +50,33 @@ const io = new Server(server, {
 
 app.set("trust proxy", 1);
 
+// app.use(
+//   session({
+//     secret: "cleantrack-secret",
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+//     }
+//   })
+// );
+
+const MongoStore = require("connect-mongo");
+
 app.use(
   session({
     secret: "cleantrack-secret",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: "sessions",
+    }),
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
   })
 );
@@ -161,7 +180,7 @@ app.get(
   "/auth/microsoft",
   passport.authenticate("microsoft")
 );
-console.log("ENV:", process.env.NODE_ENV,process.env.NODE_ENV === "production");
+console.log("ENV:", process.env.NODE_ENV, process.env.NODE_ENV === "production");
 
 app.get(
   "/auth/microsoft/callback",
