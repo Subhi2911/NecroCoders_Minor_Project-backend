@@ -115,8 +115,8 @@ router.put('/assign-authority/:binId', async (req, res) => {
 
 router.post('/add-bin', async (req, res) => {
     try {
-        const { location, capacity, authority } = req.body;
-        console.log(location, capacity, authority);
+        const { location, capacity, authority, zone } = req.body;
+        console.log(location, capacity, authority,zone);
         const newBin = new Bins({
             binCode: `BIN-${nanoid(8)}`,
             location,
@@ -126,6 +126,7 @@ router.post('/add-bin', async (req, res) => {
                 type: 'Point',
                 coordinates: [0, 0] // default coordinates, can be updated later
             },
+            zone: zone || null, // default zone, can be updated later
             currentFillLevel: 0,
             status: 'empty'
         });

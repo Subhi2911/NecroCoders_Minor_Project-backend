@@ -6,7 +6,7 @@ const { nanoid } = require('nanoid');
 // Get all staff members
 router.get('/', async (req, res) => {
     try {
-        const staffs = await Staffs.find().populate('assignedBins', 'location status');
+        const staffs = await Staffs.find().populate('assignedBins', 'location status zone');
         res.json(staffs);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch staff members' });
