@@ -64,6 +64,7 @@ app.use('/api/alerts', ensureAuth, require('./routes/alerts'));
 app.use('/api/bins', ensureAuth, require('./routes/bins'));
 app.use('/api/sms', ensureAuth, require('./routes/sms'));
 app.use('/api/staffs', ensureAuth, require('./routes/staffs'));
+app.use('/api/zones', ensureAuth, require('./routes/zones'));
 
 
 

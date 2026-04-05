@@ -81,5 +81,24 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+router.put('/:id/assign-bins', async (req, res) => {
+    try {
+        const { assignedBins } = req.body;
+        const staff = await Staffs.findById(req.params.id);
+        console.log(staff);
+        if (!staff) return res.status(500).json({ error: 'Staff member not found' });
+        staff.assignedBins = assignedBins;
+        await staff.save();
+        // update bins to set authority
+        await Bins.updateMany(
+            { _id: { $in: assignedBins } },
+            { $set: { authority: staff._id } }
+        );
+        res.json(staff);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to assign bins to staff member' });
+    }
+});
+
 
 module.exports = router;

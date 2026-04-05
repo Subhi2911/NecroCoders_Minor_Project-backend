@@ -28,6 +28,10 @@ const StaffsSchema = new mongoose.Schema({
     completedTasks:{
         type: Number,
         default: 0
+    },
+    zone: {
+        type: String,
+        default: "A"
     }
 
 }, { timestamps: true });   

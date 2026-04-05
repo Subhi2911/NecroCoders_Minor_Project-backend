@@ -37,6 +37,13 @@ const BinsSchema = new mongoose.Schema({
             required: true
         }
     },
+    zone: {
+        type: String,
+        default: "A"
+    },
+    collections: [
+        { date: Date, binId: mongoose.Schema.Types.ObjectId, collectedAmount: Number }
+    ],
     authority: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Staffs'
