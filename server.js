@@ -159,6 +159,7 @@ app.get(
   "/auth/microsoft",
   passport.authenticate("microsoft")
 );
+console.log("ENV:", process.env.NODE_ENV);
 
 app.get(
   "/auth/microsoft/callback",
