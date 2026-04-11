@@ -62,7 +62,8 @@ app.set("trust proxy", 1);
 //   })
 // );
 
-const MongoStore = require("connect-mongo");
+const MongoStoreImport = require("connect-mongo");
+const MongoStore = MongoStoreImport.default || MongoStoreImport;
 
 app.use(
   session({
